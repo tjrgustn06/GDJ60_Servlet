@@ -1,6 +1,45 @@
 package com.iu.home.product;
 
+import java.util.List;
+
 public class ProductService {
+
+	//결합도가 높다(강하다)
+	
+	private ProductDAO productDAO = new ProductDAO(); 
+	
+	//인스턴스 초기화블럭
+	{
+		
+		this.productDAO = new ProductDAO();
+	}
+	
+	//생성자
+	public ProductService () {
+		this.productDAO = new ProductDAO();
+	}
+	
+	// 세터: 결합도가 낮다(약하다)
+	public void setProductDAO (ProductDAO productDAO) {
+		this.productDAO  = productDAO;
+	}
+	
+	
+	public int setAddProduct (ProductDTO productDTO, List<ProductOptionDTO> ar) throws Exception {
+		//prdoct , option 등록
+		int productNum = productDAO.getProductNum();
+		productDTO.setProductnum(productNum);
+		int result = productDAO.SetAddProduct(productDTO);
+		
+		for(ProductOptionDTO productOptionDTO:ar) {
+			productOptionDTO.setProductNum(productNum);
+			result = productDAO.setAddProductOption(productOptionDTO);		
+		}
+		
+		return result;	
+	}
+	
+	
 
 	public static void main(String[] args) {
 		ProductDAO productDAO = new ProductDAO();
